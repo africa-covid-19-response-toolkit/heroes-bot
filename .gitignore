@@ -1,0 +1,26 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# dependencies
+node_modules
+
+# testing
+coverage
+
+# production
+/build
+/src/semantic/dist
+
+# misc
+.DS_Store
+.env
+.idea
+package-lock.json
+yarn.lock
+
+# Logs
+*.log
+
+# file path
+files/*
+
+lib/
