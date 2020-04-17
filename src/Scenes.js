@@ -204,7 +204,8 @@ const helper = require("./helper")
              let msg = "";
              // msg = msg? msg : "get the # ";
             if(ctx.message.contact!=undefined){
-                msg = "0"+ctx.message.contact.phone_number.split(" ").reduce((t,s)=>t+s).substr(3)//remove spaces and country code
+                msg = ctx.message.contact.phone_number.split(" ").reduce((t,s)=>t+s);
+                msg = "0"+msg.substr(msg.length-9)//remove spaces and country code
             }else{
                 msg = ctx.message.text;
             }
@@ -214,7 +215,7 @@ const helper = require("./helper")
             
              if (msg == "" || msg == undefined || !phoneRegex.test(msg)) {
                  ctx.reply(Strings.invalidInput);
-
+                console.log(msg);
                  ctx.flow.enter("getphoneScene", ctx.flow.state);
              } else {
                 // save to state
