@@ -27,13 +27,11 @@ const helper = require("./helper")
      collectDataScene() {
         const data = new Scene("collectDataScene");
         data.enter((ctx) => {
-            ctx.reply("Welcom & Thank you for your service");
+           
 
             // enter a scene
-            ctx.flow.enter("getnameScene", ctx.flow.state);
+            ctx.flow.enter("reportScene", ctx.flow.state);
         
-           // Log
-           new Log(ctx).log("Clicked on Report button!");
         });
 
         data.leave((ctx) => {});
@@ -51,9 +49,9 @@ const helper = require("./helper")
              ctx.reply(`Hello ${fname}`, this.keyboard.mainKeyboard());
 
              // state
-             new StatHandler().fetchData((data) => {
-                 ctx.reply(data);
-             });
+            //  new StatHandler().fetchData((data) => {
+            //      ctx.reply(data);
+            //  });
              
 
              // log
@@ -126,14 +124,15 @@ const helper = require("./helper")
 
 
          report.enter((ctx) => {
-             ctx.reply("Report");
-
-             // enter a scene
-             ctx.flow.enter("getnameScene", ctx.flow.state);
+            // enter a scene
+            ctx.reply(Strings.greet);
+            ctx.flow.enter("getnameScene", ctx.flow.state);
          
             // Log
             new Log(ctx).log("Clicked on Report button!");
          });
+
+        
 
          report.leave((ctx) => {});
 
@@ -146,8 +145,6 @@ const helper = require("./helper")
 
          about.enter((ctx) => {
              ctx.reply("about");
-
-
              // Log
              new Log(ctx).log("Clicked on about button!");
 
@@ -204,12 +201,18 @@ const helper = require("./helper")
          });
 
          getphone.on("message", (ctx) => {
-             let msg = ctx.message.contact.phone_number;
+             let msg = "";
              // msg = msg? msg : "get the # ";
-             
-             console.log(util.inspect(ctx.message, {showHidden: false, depth: null}))
+            if(ctx.message.contact!=undefined){
+                msg = "0"+ctx.message.contact.phone_number.split(" ").reduce((t,s)=>t+s).substr(3)//remove spaces and country code
+            }else{
+                msg = ctx.message.text;
+            }
 
-             if (msg == "" || msg == undefined ) {
+
+             let phoneRegex = /^09\d{8}$/; // match 09xxxxxxxx
+            
+             if (msg == "" || msg == undefined || !phoneRegex.test(msg)) {
                  ctx.reply(Strings.invalidInput);
 
                  ctx.flow.enter("getphoneScene", ctx.flow.state);
@@ -238,7 +241,6 @@ const helper = require("./helper")
 
         gethospital.on("message", (ctx) => {
             let msg = ctx.message.text;
-            console.log(msg);
 
             if (msg == "" || msg == undefined) {
                 ctx.reply(Strings.invalidInput);
@@ -366,15 +368,14 @@ const helper = require("./helper")
             ctx.reply(Strings.getGPS, this.keyboard.gpsKeyboard());
         });
 
-        getGPS.on("location", (ctx) => {
-            let loc = ctx.message.location;
+        getGPS.on("message", (ctx) => {
+            let loc = ctx.message.location?ctx.message.location:ctx.message.text;
 
-            if (loc != undefined) {
+            if (loc != undefined && loc instanceof Object) {
                 // save to state
-
                 ctx.flow.state.lat = loc.latitude;
                 ctx.flow.state.long = loc.longitude;
-
+                
                 ctx.flow.enter("getAreaofWorksScene", ctx.flow.state);
             } else {
                 ctx.reply(Strings.invalidInput);
@@ -393,29 +394,27 @@ const helper = require("./helper")
      getAreaofWorksScene() {
          const getareaofwork = new Scene("getAreaofWorksScene");
          getareaofwork.enter((ctx) => {
-             ctx.reply(Strings.area_of_work, this.keyboard.cancelKeyboard())
+             ctx.reply(Strings.area_of_work, this.keyboard.areaOfWorkKeyborad())
          });
-
-         getareaofwork.on("message", (ctx) => {
-             let msg = ctx.message.text;
-             
-             if (msg == "" || msg == undefined) {
-                 //ctx.reply(Strings.invalidInput); 
-                 ctx.reply(Strings.choiceerror);
-
-                 ctx.flow.enter("getAreaofWorksScene", ctx.flow.state);
-             } 
-             
-             if (msg == "1" || msg == "2" || msg == "3" || msg == "4" || msg == "5" || msg == "6"){
-                ctx.flow.state.work_area = msg;
-                ctx.flow.enter("symptomsScene", ctx.flow.state);
-             }else {
-                ctx.reply(Strings.choiceerror);
-                ctx.flow.enter("getAreaofWorksScene", ctx.flow.state);
-             }            
-         });
-
+                  
          getareaofwork.leave((ctx) => {});
+
+         getareaofwork.action(/[0-9]+/,(ctx)=>{
+            if(ctx.flow.state.areaOfWork===undefined){
+                ctx.flow.state.areaOfWork=Array(Strings.area_of_work_list.length).fill(false);
+             }
+             ctx.flow.state.areaOfWork[ctx.match[0]]=!ctx.flow.state.areaOfWork[ctx.match[0]];
+             ctx.editMessageText(Strings.area_of_work,this.keyboard.areaOfWorkKeyborad(ctx.flow.state.areaOfWork));
+         });
+
+         getareaofwork.action(Strings.next,(ctx)=>{
+            ctx.flow.enter("symptomsScene", ctx.flow.state);
+         });
+
+         getareaofwork.action(Strings.cancel,(ctx)=>{
+            ctx.flow.leave();            
+            ctx.reply("Canceled!", this.keyboard.mainKeyboard());
+         })
 
          return getareaofwork;
      }
@@ -424,26 +423,27 @@ const helper = require("./helper")
     symptomsScene() {
         const symptomsScene = new Scene("symptomsScene");
         symptomsScene.enter((ctx) => {
-            ctx.reply(Strings.symptoms_list, this.keyboard.cancelKeyboard())
+            ctx.reply(Strings.symptom_header, this.keyboard.symptomKeyboard());
         });
 
-        symptomsScene.on("message", (ctx) => {
-            let msg = ctx.message.text;
+       
+        symptomsScene.action(/[0-9]+/,(ctx)=>{
             
-            if (msg == "" || msg == undefined) {
-                //ctx.reply(Strings.invalidInput); 
-                ctx.reply(Strings.choiceerror2);
-                ctx.flow.enter("symptomsScene", ctx.flow.state);
-            } 
-            
-            if (msg == "1" || msg == "2" || msg == "3" || msg == "4" || msg == "5" || msg == "6" || msg == "7" || msg == "8"){
-               ctx.flow.state.symptom = msg;
-               ctx.flow.enter("ppesUsedScene", ctx.flow.state);
-            }else {
-               ctx.reply(Strings.choiceerror);
-               ctx.flow.enter("symptomsScene", ctx.flow.state);
-            }            
+            if(ctx.flow.state.symptom===undefined){
+               ctx.flow.state.symptom=Array(Strings.symptoms_list.length).fill(false);
+            }
+            ctx.flow.state.symptom[ctx.match[0]]=!ctx.flow.state.symptom[ctx.match[0]];
+            ctx.editMessageText(Strings.symptom_header,this.keyboard.symptomKeyboard(ctx.flow.state.symptom));
         });
+        
+        symptomsScene.action(Strings.next,(ctx)=>{
+           ctx.flow.enter("ppesUsedScene", ctx.flow.state);
+        });
+
+        symptomsScene.action(Strings.cancel,(ctx)=>{
+           ctx.flow.leave();            
+           ctx.reply("Canceled!", this.keyboard.mainKeyboard());
+        })
 
         symptomsScene.leave((ctx) => {});
 
@@ -454,26 +454,27 @@ const helper = require("./helper")
     ppesUsedScene() {
         const ppesUsedScene = new Scene("ppesUsedScene");
         ppesUsedScene.enter((ctx) => {
-            ctx.reply(Strings.ppe_used, this.keyboard.cancelKeyboard())
+            ctx.reply(Strings.ppe_used, this.keyboard.ppeKeyborad())
         });
 
-        ppesUsedScene.on("message", (ctx) => {
-            let msg = ctx.message.text;
+        ppesUsedScene.action(/[0-9]+/,(ctx)=>{
             
-            if (msg == "" || msg == undefined) {
-                //ctx.reply(Strings.invalidInput); 
-                ctx.reply(Strings.choiceerror2);
-                ctx.flow.enter("ppesUsedScene", ctx.flow.state);
-            } 
-            
-            if (msg == "1" || msg == "2" || msg == "3" || msg == "4" || msg == "5" || msg == "6" || msg == "7" || msg == "8"){
-               ctx.flow.state.ppe = msg;
-               ctx.flow.enter("finScene", ctx.flow.state);
-            }else {
-               ctx.reply(Strings.choiceerror);
-               ctx.flow.enter("ppesUsedScene", ctx.flow.state);
-            }            
+            if(ctx.flow.state.ppe===undefined){
+               ctx.flow.state.ppe=Array(Strings.ppe_list.length).fill(false);
+            }
+            ctx.flow.state.ppe[ctx.match[0]]=!ctx.flow.state.ppe[ctx.match[0]];
+            return ctx.editMessageText("ppe used",this.keyboard.ppeKeyborad(ctx.flow.state.ppe));
         });
+        
+        ppesUsedScene.action(Strings.next,(ctx)=>{
+           ctx.flow.enter("finScene", ctx.flow.state);
+        });
+
+        ppesUsedScene.action(Strings.cancel,(ctx)=>{
+           ctx.flow.leave();            
+           ctx.reply("Canceled!", this.keyboard.mainKeyboard());
+        })
+        
 
         ppesUsedScene.leave((ctx) => {});
 
@@ -488,14 +489,15 @@ const helper = require("./helper")
             let fn = ctx.flow.state.full_name;
             let pn = ctx.flow.state.phoneNumber;
             let hp = ctx.flow.state.hospitalpostname
-            let wa = ctx.flow.state.work_area;
+            let wa = Strings.area_of_work_list.filter((area,i)=>{return ctx.flow.state.areaOfWork[i]});
             let long = ctx.flow.state.long;
             let lat = ctx.flow.state.lat;
-            let sy = ctx.flow.state.symptom;
-            let ppe = ctx.flow.state.ppe;
+            let sy = Strings.symptoms_list.filter((area,i)=>{return ctx.flow.state.symptom[i]});
+            let ppe = Strings.ppe_list.filter((area,i)=>{return ctx.flow.state.ppe[i]});
 
             ctx.reply("Name: " + fn + "\nPhone: " + pn +   "\nHospital post name" + hp +   "\nArea of Work:" + wa + "\nLongitude " + long + "\nLatitude " + lat + "\nSymptom " + sy + "\n PPE " + ppe);
-
+        
+            //TODO record the report here!
 
             // leave
             ctx.flow.leave();

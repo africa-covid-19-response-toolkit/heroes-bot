@@ -7,12 +7,15 @@
  * 
  */
 
-
+ const greet = "Welcome & Thank you for your service";
  const report_string = "📝 Report";
  const about = "🎃 About";
- const cancel = "❌ Cancel";
+ const cancel = "❌ cancel";
  const symptom = "🌡 Symptoms";
  const statistics = "📉 Statistics";
+ const next = "➡️ next";
+
+
 
  // gender
  const male = "♂️ Male";
@@ -51,20 +54,28 @@
  const symptom_string_fever = "🤕 High temperature – you feel hot to touch on your chest or back";
  const symptom_string_cough = "New, continuous cough – this means you've started coughing repeatedly";
 
- const area_of_work = "Area of Work:\n 1. Opd\n 2. Emergency\n 3. COVID isolation area\n 4. COVID suspect ward\n 5. COVID confirmed ward \n 6. COVID ICU";
- const symptoms_list = "Symptoms:\n 1. Fever...subjective or Objective... \n 2. Cough \n 3. Sore throat \n 4. Myalgia \n 5. Vomiting \n 6. Diarrhea \n 7. Fatigue \n 8. Shortness of breath";
- const ppe_used = "PPEs Used \n 1. Hazmat Suit \n 2. Surgical gown \n 3. Apron \n 4. Shoe cover \n 5. Surgical mask \n 6. N95 \n 7. Face Shield \n 8. Goggle";
+ const area_of_work = "Area of Work:";
+ const area_of_work_list =["Opd","Emergency","COVID isolation area","COVID suspect ward","COVID confirmed ward ","COVID ICU"];
+ const symptom_header = "check the symptoms you have";
+ const symptoms_list = ['Fever...subjective or Objective','Sore throat','Myalgia','Vomiting','Fatigue','Shortness of breath'];
+ const ppe_used = "PPE used";
+ const ppe_list = ["Hazmat Suit ","Surgical gown ","Apron ","Shoe cover ","Surgical mask ","N95 ","Face Shield ","Goggle"];
  const send_gps = "Send your GPS Location";
  const send_phone = "Send your phone number";
 
  // export
+ module.exports.greet = greet;
  module.exports.area_of_work = area_of_work;
+ module.exports.area_of_work_list = area_of_work_list;
  module.exports.symptoms_list = symptoms_list;
- module.exports.ppe_used = ppe_used; 
+ module.exports.symptom_header = symptom_header;
+ module.exports.ppe_used = ppe_used;
+ module.exports.ppe_list = ppe_list; 
  module.exports.choiceerror = choiceerror; 
  module.exports.choiceerror = choiceerror2;
  module.exports.send_gps = send_gps; 
  module.exports.send_phone = send_phone;
+ module.exports.next = next;
 
 
  module.exports.report_string = report_string;
