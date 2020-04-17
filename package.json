@@ -23,8 +23,12 @@
   },
   "homepage": "https://github.com/Ethiopia-COVID19/bot#readme",
   "dependencies": {
+    "dotenv": "^8.2.0",
+    "google-spreadsheet": "^3.0.11",
+    "googleapis": "^49.0.0",
     "node-fetch": "^2.6.0",
     "telegraf": "^3.37.0",
-    "telegraf-flow": "^8.3.0"
+    "telegraf-flow": "^8.3.0",
+    "yn": "^4.0.0"
   }
 }
