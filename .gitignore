@@ -16,6 +16,7 @@ coverage
 .idea
 package-lock.json
 yarn.lock
+client_secret.json
 
 # Logs
 *.log

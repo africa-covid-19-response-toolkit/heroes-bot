@@ -17,7 +17,18 @@ const { Keyboard } = require("./Keyboard");
 const { Log } = require("./Log");
 const { StatHandler } = require("./StatHandler");
 const Strings = require("./Strings");
+const Spreadsheet = require("./spreadsheet");
 const helper = require("./helper")
+const yn = require('yn');
+
+// get & parse .env file
+const dotenv = require('dotenv').config();
+
+if (dotenv.error) {
+  throw dotenv.error
+}
+
+
 
  class Scenes {
      constructor() {
@@ -53,7 +64,6 @@ const helper = require("./helper")
             //      ctx.reply(data);
             //  });
              
-
              // log
              new Log(ctx).log("Started the bot!");
 
@@ -122,12 +132,10 @@ const helper = require("./helper")
      reportScene() {
          const report = new Scene("reportScene");
 
-
          report.enter((ctx) => {
             // enter a scene
             ctx.reply(Strings.greet);
-            ctx.flow.enter("getnameScene", ctx.flow.state);
-         
+            ctx.flow.enter("getnameScene", ctx.flow.state);         
             // Log
             new Log(ctx).log("Clicked on Report button!");
          });
@@ -203,12 +211,14 @@ const helper = require("./helper")
          getphone.on("message", (ctx) => {
              let msg = "";
              // msg = msg? msg : "get the # ";
+
             if(ctx.message.contact!=undefined){
                 msg = ctx.message.contact.phone_number.split(" ").reduce((t,s)=>t+s);
                 msg = "0"+msg.substr(msg.length-9)//remove spaces and country code
             }else{
                 msg = ctx.message.text;
             }
+
 
 
              let phoneRegex = /^09\d{8}$/; // match 09xxxxxxxx
@@ -246,7 +256,7 @@ const helper = require("./helper")
             if (msg == "" || msg == undefined) {
                 ctx.reply(Strings.invalidInput);
 
-                ctx.flow.enter("gethospital", ctx.flow.state);
+                ctx.flow.enter("getHospitalName", ctx.flow.state);
             } else {
                // save to state
                ctx.flow.state.hospitalpostname = msg;
@@ -487,18 +497,26 @@ const helper = require("./helper")
         const fin = new Scene("finScene");
 
         fin.enter((ctx) => {
-            let fn = ctx.flow.state.full_name;
-            let pn = ctx.flow.state.phoneNumber;
-            let hp = ctx.flow.state.hospitalpostname
-            let wa = Strings.area_of_work_list.filter((area,i)=>{return ctx.flow.state.areaOfWork[i]});
-            let long = ctx.flow.state.long;
-            let lat = ctx.flow.state.lat;
-            let sy = Strings.symptoms_list.filter((area,i)=>{return ctx.flow.state.symptom[i]});
-            let ppe = Strings.ppe_list.filter((area,i)=>{return ctx.flow.state.ppe[i]});
 
-            ctx.reply("Name: " + fn + "\nPhone: " + pn +   "\nHospital post name" + hp +   "\nArea of Work:" + wa + "\nLongitude " + long + "\nLatitude " + lat + "\nSymptom " + sy + "\n PPE " + ppe);
+        let data = {
+            name: ctx.flow.state.full_name,
+            phone: ctx.flow.state.phoneNumber,
+            postName: Strings.area_of_work_list.filter((area,i)=>{return ctx.flow.state.areaOfWork[i]}),
+            AreaofWork: ctx.flow.state.work_area,
+            long: ctx.flow.state.long,
+            lat: ctx.flow.state.lat,
+            symptoms: Strings.symptoms_list.filter((area,i)=>{return ctx.flow.state.symptom[i]}),
+            PPEsUsed: Strings.ppe_list.filter((area,i)=>{return ctx.flow.state.ppe[i]})
+        }
+
+        // if   PUSH_TO_SPREADSHEET var is true, push to a google excel sheet  
+        if(yn(process.env.PUSH_TO_SPREADSHEET)){
+            console.log("Writing to spreadsheet ...");    
+            Spreadsheet.writeToSpreadsheet(data);
+            console.log("Writing to spreadsheet Done");
+        }
         
-            //TODO record the report here!
+            ctx.reply("Name: " + data.name + "\nPhone: " + data.phone +   "\nHospital post name: " + data.postName +   "\nArea of Work: " + data.AreaofWork + "\nLongitude: " + data.long + "\nLatitude: " + data.lat + "\nSymptom: " + data.symptoms + "\nPPEsUsed: " + data.PPEsUsed);
 
             // leave
             ctx.flow.leave();
