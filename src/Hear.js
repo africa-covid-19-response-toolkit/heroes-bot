@@ -38,8 +38,7 @@ class Hear {
 
         this.ctx.hears(Strings.cancel, (ctx) => {
             ctx.flow.leave();
-
-            ctx.reply("Canceld!", this.keyboard.mainKeyboard());
+            ctx.reply("Canceled!", this.keyboard.mainKeyboard());
         });
 
     }

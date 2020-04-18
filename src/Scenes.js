@@ -38,13 +38,11 @@ if (dotenv.error) {
      collectDataScene() {
         const data = new Scene("collectDataScene");
         data.enter((ctx) => {
-            ctx.reply("Welcom & Thank you for your service");
+           
 
             // enter a scene
-            ctx.flow.enter("getnameScene", ctx.flow.state);
+            ctx.flow.enter("reportScene", ctx.flow.state);
         
-           // Log
-           new Log(ctx).log("Clicked on Report button!");
         });
 
         data.leave((ctx) => {});
@@ -62,9 +60,9 @@ if (dotenv.error) {
              ctx.reply(`Hello ${fname}`, this.keyboard.mainKeyboard());
 
              // state
-             new StatHandler().fetchData((data) => {
-                 ctx.reply(data);
-             });
+            //  new StatHandler().fetchData((data) => {
+            //      ctx.reply(data);
+            //  });
              
              // log
              new Log(ctx).log("Started the bot!");
@@ -135,14 +133,14 @@ if (dotenv.error) {
          const report = new Scene("reportScene");
 
          report.enter((ctx) => {
-             ctx.reply("Welcome and Thank yor for your service");
-
-             // enter a scene
-             ctx.flow.enter("getnameScene", ctx.flow.state);
-         
+            // enter a scene
+            ctx.reply(Strings.greet);
+            ctx.flow.enter("getnameScene", ctx.flow.state);         
             // Log
             new Log(ctx).log("Clicked on Report button!");
          });
+
+        
 
          report.leave((ctx) => {});
 
@@ -155,8 +153,6 @@ if (dotenv.error) {
 
          about.enter((ctx) => {
              ctx.reply("about");
-
-
              // Log
              new Log(ctx).log("Clicked on about button!");
 
@@ -213,14 +209,23 @@ if (dotenv.error) {
          });
 
          getphone.on("message", (ctx) => {
-             let msg = ctx.message.contact.phone_number;
+             let msg = "";
              // msg = msg? msg : "get the # ";
-             
-             // console.log(util.inspect(ctx.message, {showHidden: false, depth: null}))
 
-             if (msg == "" || msg == undefined ) {
+            if(ctx.message.contact!=undefined){
+                msg = ctx.message.contact.phone_number.split(" ").reduce((t,s)=>t+s);
+                msg = "0"+msg.substr(msg.length-9)//remove spaces and country code
+            }else{
+                msg = ctx.message.text;
+            }
+
+
+
+             let phoneRegex = /^09\d{8}$/; // match 09xxxxxxxx
+            
+             if (msg == "" || msg == undefined || !phoneRegex.test(msg)) {
                  ctx.reply(Strings.invalidInput);
-
+                console.log(msg);
                  ctx.flow.enter("getphoneScene", ctx.flow.state);
              } else {
                 // save to state
@@ -247,7 +252,6 @@ if (dotenv.error) {
 
         gethospital.on("message", (ctx) => {
             let msg = ctx.message.text;
-            console.log(msg);
 
             if (msg == "" || msg == undefined) {
                 ctx.reply(Strings.invalidInput);
@@ -375,15 +379,14 @@ if (dotenv.error) {
             ctx.reply(Strings.getGPS, this.keyboard.gpsKeyboard());
         });
 
-        getGPS.on("location", (ctx) => {
-            let loc = ctx.message.location;
+        getGPS.on("message", (ctx) => {
+            let loc = ctx.message.location?ctx.message.location:ctx.message.text;
 
-            if (loc != undefined) {
+            if (loc != undefined && loc instanceof Object) {
                 // save to state
-
                 ctx.flow.state.lat = loc.latitude;
                 ctx.flow.state.long = loc.longitude;
-
+                
                 ctx.flow.enter("getAreaofWorksScene", ctx.flow.state);
             } else {
                 ctx.reply(Strings.invalidInput);
@@ -402,29 +405,27 @@ if (dotenv.error) {
      getAreaofWorksScene() {
          const getareaofwork = new Scene("getAreaofWorksScene");
          getareaofwork.enter((ctx) => {
-             ctx.reply(Strings.area_of_work, this.keyboard.cancelKeyboard())
+             ctx.reply(Strings.area_of_work, this.keyboard.areaOfWorkKeyborad())
          });
-
-         getareaofwork.on("message", (ctx) => {
-             let msg = ctx.message.text;
-             
-             if (msg == "" || msg == undefined) {
-                 //ctx.reply(Strings.invalidInput); 
-                 ctx.reply(Strings.choiceerror);
-
-                 ctx.flow.enter("getAreaofWorksScene", ctx.flow.state);
-             } 
-             
-             if (msg == "1" || msg == "2" || msg == "3" || msg == "4" || msg == "5" || msg == "6"){
-                ctx.flow.state.work_area = msg;
-                ctx.flow.enter("symptomsScene", ctx.flow.state);
-             }else {
-                ctx.reply(Strings.choiceerror);
-                ctx.flow.enter("getAreaofWorksScene", ctx.flow.state);
-             }            
-         });
-
+                  
          getareaofwork.leave((ctx) => {});
+
+         getareaofwork.action(/[0-9]+/,(ctx)=>{
+            if(ctx.flow.state.areaOfWork===undefined){
+                ctx.flow.state.areaOfWork=Array(Strings.area_of_work_list.length).fill(false);
+             }
+             ctx.flow.state.areaOfWork[ctx.match[0]]=!ctx.flow.state.areaOfWork[ctx.match[0]];
+             ctx.editMessageText(Strings.area_of_work,this.keyboard.areaOfWorkKeyborad(ctx.flow.state.areaOfWork));
+         });
+
+         getareaofwork.action(Strings.next,(ctx)=>{
+            ctx.flow.enter("symptomsScene", ctx.flow.state);
+         });
+
+         getareaofwork.action(Strings.cancel,(ctx)=>{
+            ctx.flow.leave();            
+            ctx.reply("Canceled!", this.keyboard.mainKeyboard());
+         })
 
          return getareaofwork;
      }
@@ -433,26 +434,27 @@ if (dotenv.error) {
     symptomsScene() {
         const symptomsScene = new Scene("symptomsScene");
         symptomsScene.enter((ctx) => {
-            ctx.reply(Strings.symptoms_list, this.keyboard.cancelKeyboard())
+            ctx.reply(Strings.symptom_header, this.keyboard.symptomKeyboard());
         });
 
-        symptomsScene.on("message", (ctx) => {
-            let msg = ctx.message.text;
+       
+        symptomsScene.action(/[0-9]+/,(ctx)=>{
             
-            if (msg == "" || msg == undefined) {
-                //ctx.reply(Strings.invalidInput); 
-                ctx.reply(Strings.choiceerror2);
-                ctx.flow.enter("symptomsScene", ctx.flow.state);
-            } 
-            
-            if (msg == "1" || msg == "2" || msg == "3" || msg == "4" || msg == "5" || msg == "6" || msg == "7" || msg == "8"){
-               ctx.flow.state.symptom = msg;
-               ctx.flow.enter("ppesUsedScene", ctx.flow.state);
-            }else {
-               ctx.reply(Strings.choiceerror);
-               ctx.flow.enter("symptomsScene", ctx.flow.state);
-            }            
+            if(ctx.flow.state.symptom===undefined){
+               ctx.flow.state.symptom=Array(Strings.symptoms_list.length).fill(false);
+            }
+            ctx.flow.state.symptom[ctx.match[0]]=!ctx.flow.state.symptom[ctx.match[0]];
+            ctx.editMessageText(Strings.symptom_header,this.keyboard.symptomKeyboard(ctx.flow.state.symptom));
         });
+        
+        symptomsScene.action(Strings.next,(ctx)=>{
+           ctx.flow.enter("ppesUsedScene", ctx.flow.state);
+        });
+
+        symptomsScene.action(Strings.cancel,(ctx)=>{
+           ctx.flow.leave();            
+           ctx.reply("Canceled!", this.keyboard.mainKeyboard());
+        })
 
         symptomsScene.leave((ctx) => {});
 
@@ -463,26 +465,27 @@ if (dotenv.error) {
     ppesUsedScene() {
         const ppesUsedScene = new Scene("ppesUsedScene");
         ppesUsedScene.enter((ctx) => {
-            ctx.reply(Strings.ppe_used, this.keyboard.cancelKeyboard())
+            ctx.reply(Strings.ppe_used, this.keyboard.ppeKeyborad())
         });
 
-        ppesUsedScene.on("message", (ctx) => {
-            let msg = ctx.message.text;
+        ppesUsedScene.action(/[0-9]+/,(ctx)=>{
             
-            if (msg == "" || msg == undefined) {
-                //ctx.reply(Strings.invalidInput); 
-                ctx.reply(Strings.choiceerror2);
-                ctx.flow.enter("ppesUsedScene", ctx.flow.state);
-            } 
-            
-            if (msg == "1" || msg == "2" || msg == "3" || msg == "4" || msg == "5" || msg == "6" || msg == "7" || msg == "8"){
-               ctx.flow.state.ppe = msg;
-               ctx.flow.enter("finScene", ctx.flow.state);
-            }else {
-               ctx.reply(Strings.choiceerror);
-               ctx.flow.enter("ppesUsedScene", ctx.flow.state);
-            }            
+            if(ctx.flow.state.ppe===undefined){
+               ctx.flow.state.ppe=Array(Strings.ppe_list.length).fill(false);
+            }
+            ctx.flow.state.ppe[ctx.match[0]]=!ctx.flow.state.ppe[ctx.match[0]];
+            return ctx.editMessageText("ppe used",this.keyboard.ppeKeyborad(ctx.flow.state.ppe));
         });
+        
+        ppesUsedScene.action(Strings.next,(ctx)=>{
+           ctx.flow.enter("finScene", ctx.flow.state);
+        });
+
+        ppesUsedScene.action(Strings.cancel,(ctx)=>{
+           ctx.flow.leave();            
+           ctx.reply("Canceled!", this.keyboard.mainKeyboard());
+        })
+        
 
         ppesUsedScene.leave((ctx) => {});
 
@@ -494,16 +497,17 @@ if (dotenv.error) {
         const fin = new Scene("finScene");
 
         fin.enter((ctx) => {
-            let data = {
-                name: ctx.flow.state.full_name,
-                phone: ctx.flow.state.phoneNumber,
-                postName: ctx.flow.state.hospitalpostname,
-                AreaofWork: ctx.flow.state.work_area,
-                long: ctx.flow.state.long,
-                lat: ctx.flow.state.lat,
-                symptoms: ctx.flow.state.symptom,
-                PPEsUsed: ctx.flow.state.ppe
-            }
+
+        let data = {
+            name: ctx.flow.state.full_name,
+            phone: ctx.flow.state.phoneNumber,
+            postName: Strings.area_of_work_list.filter((area,i)=>{return ctx.flow.state.areaOfWork[i]}),
+            AreaofWork: ctx.flow.state.work_area,
+            long: ctx.flow.state.long,
+            lat: ctx.flow.state.lat,
+            symptoms: Strings.symptoms_list.filter((area,i)=>{return ctx.flow.state.symptom[i]}),
+            PPEsUsed: Strings.ppe_list.filter((area,i)=>{return ctx.flow.state.ppe[i]})
+        }
 
         // if   PUSH_TO_SPREADSHEET var is true, push to a google excel sheet  
         if(yn(process.env.PUSH_TO_SPREADSHEET)){
