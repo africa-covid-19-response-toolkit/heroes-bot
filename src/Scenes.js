@@ -497,12 +497,12 @@ if (dotenv.error) {
         const fin = new Scene("finScene");
 
         fin.enter((ctx) => {
-
+            
         let data = {
             name: ctx.flow.state.full_name,
-            phone: ctx.flow.state.phoneNumber,
-            postName: Strings.area_of_work_list.filter((area,i)=>{return ctx.flow.state.areaOfWork[i]}),
-            AreaofWork: ctx.flow.state.work_area,
+            phone: ctx.flow.state.phoneNumber, 
+            postName: ctx.flow.state.hospitalpostname,
+            AreaofWork:  Strings.area_of_work_list.filter((area,i)=>{return ctx.flow.state.areaOfWork[i]}),
             long: ctx.flow.state.long,
             lat: ctx.flow.state.lat,
             symptoms: Strings.symptoms_list.filter((area,i)=>{return ctx.flow.state.symptom[i]}),
