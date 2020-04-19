@@ -8,9 +8,15 @@ const { CommandHandler } = require("./src/CommandHandler");
 const { Hear } = require("./src/Hear");
 // const { ActionHandler } = require("./src/ActionHandler");
 
+// get & parse .env file
+const dotenv = require('dotenv').config();
+
+if (dotenv.error) {
+  throw dotenv.error
+}
 
 // bot
-const bot = new Telegraf(Secrets.BOT_TOKEN);
+const bot = new Telegraf(process.env.BOT_TOKEN);
 
 // commandHandler
 const commandHandler = new CommandHandler(flow);

@@ -501,12 +501,12 @@ if (dotenv.error) {
         let data = {
             name: ctx.flow.state.full_name,
             phone: ctx.flow.state.phoneNumber,
-            postName: Strings.area_of_work_list.filter((area,i)=>{return ctx.flow.state.areaOfWork[i]}),
-            AreaofWork: ctx.flow.state.work_area,
+            postName: ctx.flow.state.hospitalpostname,
+            AreaofWork: Strings.area_of_work_list.filter((area,i)=>{return ctx.flow.state.areaOfWork[i]}).toString(),
             long: ctx.flow.state.long,
             lat: ctx.flow.state.lat,
-            symptoms: Strings.symptoms_list.filter((area,i)=>{return ctx.flow.state.symptom[i]}),
-            PPEsUsed: Strings.ppe_list.filter((area,i)=>{return ctx.flow.state.ppe[i]})
+            symptoms: Strings.symptoms_list.filter((area,i)=>{return ctx.flow.state.symptom[i]}).toString(),
+            PPEsUsed: Strings.ppe_list.filter((area,i)=>{return ctx.flow.state.ppe[i]}).toString()
         }
 
         // if   PUSH_TO_SPREADSHEET var is true, push to a google excel sheet  

@@ -1,5 +1,4 @@
 const { GoogleSpreadsheet } = require('google-spreadsheet');
-const { promisify } = require('util');
 
 // get & parse .env file
 const dotenv = require('dotenv').config();

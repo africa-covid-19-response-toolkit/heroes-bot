@@ -18,11 +18,8 @@ const MAIN_CHANNEL_USERNAME = "testETherobot";
 const ADMINS = []
 
 
-const BOT_TOKEN = "1209435189:AAGFTVVDQaMAu_RBZqtlMaqB-eU9tFISfp8";
 
 
-
-module.exports.BOT_TOKEN = BOT_TOKEN;
 module.exports.LOG_ID = LOG_ID;
 module.exports.LOG_TITLE = LOG_TITLE;
 
