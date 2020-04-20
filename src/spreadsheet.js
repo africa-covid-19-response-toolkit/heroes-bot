@@ -1,5 +1,4 @@
 const { GoogleSpreadsheet } = require('google-spreadsheet');
-const { promisify } = require('util');
 const Strings = require("./Strings");
 
 // get & parse .env file
