@@ -1,0 +1,24 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "redet-G",
+      "name": "Redet Getachew",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/20116752?v=4",
+      "profile": "https://linkedin.com/in/redet",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "covid-19-heroes-bot",
+  "projectOwner": "Ethiopia-COVID19",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
