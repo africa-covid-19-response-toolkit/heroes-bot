@@ -1,6 +1,6 @@
 # Heroes Telegram Bot
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 A Telegram bot that allows frontline healthcare workers to log any symptom they are experiencing, get best practice information, get logistical assistance and provide creative ways to distress.
@@ -47,6 +47,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tr>
     <td align="center"><a href="https://linkedin.com/in/redet"><img src="https://avatars0.githubusercontent.com/u/20116752?v=4" width="100px;" alt=""/><br /><sub><b>Redet Getachew</b></sub></a><br /><a href="https://github.com/Ethiopia-COVID19/covid-19-heroes-bot/commits?author=redet-G" title="Code">💻</a></td>
+    <td align="center"><a href="http://www.twitter.com/mikeendale"><img src="https://avatars1.githubusercontent.com/u/430112?v=4" width="100px;" alt=""/><br /><sub><b>Mike Endale</b></sub></a><br /><a href="https://github.com/Ethiopia-COVID19/covid-19-heroes-bot/commits?author=dotmike" title="Code">💻</a></td>
   </tr>
 </table>
 
