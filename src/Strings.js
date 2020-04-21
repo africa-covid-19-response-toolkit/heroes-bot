@@ -55,11 +55,13 @@
  const symptom_string_cough = "New, continuous cough – this means you've started coughing repeatedly";
 
  const area_of_work = "Area of Work:";
+ const profession = "Please select your profession\n\n1. Doctor\n2. Nurse\n3.Anesthesiologist\n4.Anesthesia\n5.Midwife\n6.Triage officer"
  const area_of_work_list =["Opd","Emergency","COVID isolation area","COVID suspect ward","COVID confirmed ward ","COVID ICU"];
  const symptom_header = "check the symptoms you have";
  const symptoms_list = ['Fever...subjective or Objective','Sore throat','Myalgia','Vomiting','Fatigue','Shortness of breath'];
  const ppe_used = "PPE used";
  const ppe_list = ["Hazmat Suit ","Surgical gown ","Apron ","Shoe cover ","Surgical mask ","N95 ","Face Shield ","Goggle"];
+ const profession_list = ["Doctor", "Nurse", "Anesthesiologist", "Anesthesia", "Midwife", "Triage officer"];
  const send_gps = "Send your GPS Location";
  const send_phone = "Send your phone number";
 
@@ -72,10 +74,12 @@
  module.exports.ppe_used = ppe_used;
  module.exports.ppe_list = ppe_list; 
  module.exports.choiceerror = choiceerror; 
- module.exports.choiceerror = choiceerror2;
+ module.exports.choiceerror2 = choiceerror2;
  module.exports.send_gps = send_gps; 
  module.exports.send_phone = send_phone;
  module.exports.next = next;
+ module.exports.profession_list = profession_list;
+ module.exports.profession = profession;
 
 
  module.exports.report_string = report_string;
