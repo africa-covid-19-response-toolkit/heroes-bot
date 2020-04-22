@@ -404,31 +404,17 @@ if (dotenv.error) {
     getprofessionScene() {
         const getprofession = new Scene("getprofessionScene");
         getprofession.enter((ctx) => {
-            ctx.reply(Strings.profession, this.keyboard.cancelKeyboard())
+            ctx.reply(Strings.profession, this.keyboard.professionKeyboard())
         });
         getprofession.on("message", (ctx) => {
-            let msg = ctx.message.text;
-
-            if (msg == "" || msg == undefined) {
                 ctx.reply(Strings.invalidInput);
-
-                ctx.flow.enter("getprofessionScene", ctx.flow.state);
-            } 
-            
-            if(parseInt(msg)>=1 && parseInt(msg)<=6){
-                // save to state
-               ctx.flow.state.profession= Strings.profession_list[parseInt(msg)-1];
-               // enter scene
-               ctx.flow.enter("getAreaofWorksScene", ctx.flow.state);
-            }
-            
-            else {
-
-                ctx.reply(Strings.choiceerror);
-                ctx.flow.enter("getprofessionScene", ctx.flow.state);
-            }
-           
+                ctx.flow.enter("getprofessionScene", ctx.flow.state);           
         });
+
+        getprofession.action(/[0-9]+/,(ctx)=>{
+            ctx.flow.state.profession= Strings.profession_list[ctx.match[0]];
+            ctx.flow.enter("getAreaofWorksScene", ctx.flow.state);
+        })
 
         getprofession.leave((ctx) => {});
         return getprofession;

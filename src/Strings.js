@@ -55,7 +55,7 @@
  const symptom_string_cough = "New, continuous cough – this means you've started coughing repeatedly";
 
  const area_of_work = "Area of Work:";
- const profession = "Please select your profession\n\n1. Doctor\n2. Nurse\n3.Anesthesiologist\n4.Anesthesia\n5.Midwife\n6.Triage officer"
+ const profession = "Please select your profession"
  const area_of_work_list =["Opd","Emergency","COVID isolation area","COVID suspect ward","COVID confirmed ward ","COVID ICU"];
  const symptom_header = "check the symptoms you have";
  const symptoms_list = ['Fever...subjective or Objective','Sore throat','Myalgia','Vomiting','Fatigue','Shortness of breath'];
