@@ -27,6 +27,7 @@ module.exports.writeToSpreadsheet = async function writeToSpreadsheet(data) {
     date: moment().format('DD-MM-YYYY'),
     name: data.name,
     phone: data.phone,
+    profession: data.profession,
     postName: data.postName,
     long: data.long,
     lat: data.lat,

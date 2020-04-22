@@ -61,8 +61,7 @@ flow.register(new Scenes().getLocation());
 flow.register(new Scenes().finScene());
 flow.register(new Scenes().symptomScene());
 flow.register(new Scenes().statScene()); 
-
-
+flow.register(new Scenes().getprofessionScene());
 
 bot.use(Telegraf.session())
 bot.use(flow.middleware())

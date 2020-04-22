@@ -387,7 +387,7 @@ if (dotenv.error) {
                 ctx.flow.state.lat = loc.latitude;
                 ctx.flow.state.long = loc.longitude;
                 
-                ctx.flow.enter("getAreaofWorksScene", ctx.flow.state);
+                ctx.flow.enter("getprofessionScene", ctx.flow.state);
             } else {
                 ctx.reply(Strings.invalidInput);
                 
@@ -400,6 +400,39 @@ if (dotenv.error) {
 
         return getGPS;
      }
+
+    getprofessionScene() {
+        const getprofession = new Scene("getprofessionScene");
+        getprofession.enter((ctx) => {
+            ctx.reply(Strings.profession, this.keyboard.cancelKeyboard())
+        });
+        getprofession.on("message", (ctx) => {
+            let msg = ctx.message.text;
+
+            if (msg == "" || msg == undefined) {
+                ctx.reply(Strings.invalidInput);
+
+                ctx.flow.enter("getprofessionScene", ctx.flow.state);
+            } 
+            
+            if(parseInt(msg)>=1 && parseInt(msg)<=6){
+                // save to state
+               ctx.flow.state.profession= Strings.profession_list[parseInt(msg)-1];
+               // enter scene
+               ctx.flow.enter("getAreaofWorksScene", ctx.flow.state);
+            }
+            
+            else {
+
+                ctx.reply(Strings.choiceerror);
+                ctx.flow.enter("getprofessionScene", ctx.flow.state);
+            }
+           
+        });
+
+        getprofession.leave((ctx) => {});
+        return getprofession;
+    }
 
      
      getAreaofWorksScene() {
@@ -506,7 +539,8 @@ if (dotenv.error) {
             long: ctx.flow.state.long,
             lat: ctx.flow.state.lat,
             symptoms: Strings.symptoms_list.filter((area,i)=>{return ctx.flow.state.symptom[i]}),
-            PPEsUsed: Strings.ppe_list.filter((area,i)=>{return ctx.flow.state.ppe[i]})
+            PPEsUsed: Strings.ppe_list.filter((area,i)=>{return ctx.flow.state.ppe[i]}),
+            profession: ctx.flow.state.profession
         }
 
         // if   PUSH_TO_SPREADSHEET var is true, push to a google excel sheet  
@@ -516,7 +550,7 @@ if (dotenv.error) {
             console.log("Writing to spreadsheet Done");
         }
         
-            ctx.reply("Name: " + data.name + "\nPhone: " + data.phone +   "\nHospital post name: " + data.postName +   "\nArea of Work: " + data.AreaofWork + "\nLongitude: " + data.long + "\nLatitude: " + data.lat + "\nSymptom: " + data.symptoms + "\nPPEsUsed: " + data.PPEsUsed);
+            ctx.reply("Name: " + data.name + "\nPhone: " + data.phone  + "\nProfession: " + data.profession  +   "\nHospital post name: " + data.postName +   "\nArea of Work: " + data.AreaofWork + "\nLongitude: " + data.long + "\nLatitude: " + data.lat + "\nSymptom: " + data.symptoms + "\nPPEsUsed: " + data.PPEsUsed);
 
             // leave
             ctx.flow.leave();
