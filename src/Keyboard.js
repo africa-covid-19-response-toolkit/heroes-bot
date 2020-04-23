@@ -140,6 +140,25 @@ class Keyboard {
         });
     }
 
+    professionKeyboard(){
+        return Extra.markup((markup) => {
+            let btns = Strings.profession_list.map(
+                (label,index)=>{
+                    return [markup.callbackButton(`${label}`, index.toString())];
+                }
+            );
+
+            btns.push([
+                markup.callbackButton(Strings.cancel,Strings.cancel)
+            ]);
+            return markup
+                .inlineKeyboard(btns)
+                .resize();
+        });
+    }
+
+
+
 
 }
 

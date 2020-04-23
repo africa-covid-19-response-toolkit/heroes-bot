@@ -2,7 +2,7 @@
   <img alt="ACRT Infrastructure Templates" src="acrt_19_bot.png" width="650px">
 </div>
 
-# Heroes Telegram Bot
+# Ethiopia COVID-19 Heroes Bot 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
@@ -15,20 +15,15 @@ A Telegram bot that allows frontline healthcare workers to log any symptom they 
 3. Get logistical assistance ![implementing](https://img.shields.io/static/v1?label=Implemented&message=none&color=red)
 4. Provide creative ways to distress ![implementing](https://img.shields.io/static/v1?label=Implemented&message=none&color=red)
 
-## Resources
-
-- https://govinsider.asia/innovation/singapore-coronavirus-whatsapp-covid19-open-government-products-govtech
-=======
-# Ethiopia COVID-19 Heroes Bot  
- This bot extends the starter kit from [here](https://github.com/Ethiopia-COVID19/covid-19-bot-starter-kit) 
+This bot extends the starter kit from [here](https://github.com/Ethiopia-COVID19/covid-19-bot-starter-kit) 
  > **Note:**  Optionally, the data collected by the bot can be pushed to Google spreadsheet. To enable this functionality ```google-spreadsheet``` package is used ([more detail](https://www.npmjs.com/package/google-spreadsheet)). Take a look at the ```.env``` file to turn this on/off. You also need to set up a Google project & enable the sheets API ([more detail](https://theoephraim.github.io/node-google-spreadsheet/#/getting-started/authentication)) 
 
 ## Build Setup
 ```bash
 # copy .env.example file to .env and populate the required credentials
-# populate the Telegram bot credentials in Secrets.js
+# populate the Telegram bot credentials in .env
 
-# install dependecies 
+# install dependencies 
 $ npm install
 
 # run app.js
