@@ -66,6 +66,7 @@ flow.register(new Scenes().physiciansGuide());
 flow.register(new Scenes().manageAdmins());
 flow.register(new Scenes().addNewAdmins());
 flow.register(new Scenes().getTelegramHandel());
+flow.register(new Scenes().setGuide());
 
 bot.use(Telegraf.session())
 bot.use(flow.middleware())

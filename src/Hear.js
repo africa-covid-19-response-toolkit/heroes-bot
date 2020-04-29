@@ -31,6 +31,10 @@ class Hear {
         this.ctx.hears(Strings.admins, (ctx) => {
            ctx.flow.enter("mngAdmins");
         });
+
+        this.ctx.hears(Strings.setGuide, (ctx) => {
+           ctx.flow.enter("setGuide");
+        });
         
         this.ctx.hears(Strings.about, (ctx) => {
             ctx.flow.enter("aboutScene");

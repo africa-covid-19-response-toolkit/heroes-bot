@@ -21,11 +21,11 @@ class Keyboard {
 
     mainKeyboard(ctx) {
         let username = ctx.update.callback_query?ctx.update.callback_query.from.username:ctx.message.from.username;
-        console.log(admins.isAdmin(username)); 
         if(ctx != undefined && admins.isAdmin(username)){
             return Markup.keyboard([
                 [Strings.report_string],
                 [Strings.physicians_guide],
+                [Strings.setGuide],
                 [Strings.admins]
             ])
             .oneTime()

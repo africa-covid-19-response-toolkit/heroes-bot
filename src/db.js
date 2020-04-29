@@ -10,7 +10,8 @@ if (dotenv.error) {
 }
 let dbFile = path.resolve(__dirname, "./dataStore.json");
 let admins ={};
-const defaultSchema = {admins:[]}; //{admin: { name: name, telegramHandel: @handel  }}
+let guide ={};
+const defaultSchema = {admins:[],guide:{}}; //{admin: { name: name, telegramHandel: @handel  },guide:url}
 
 const adapter =  new FileSync(dbFile);
 const db = new low(adapter);
@@ -35,12 +36,13 @@ if(db.get('admins').value().length == 0){
     try {
         JSON.parse(process.env.INIT_ADMINS).forEach((el)=>{admins.insert(el);});
     } catch (e) {
-      console.log(
-        "initial admin list is not correct. please edit INIT_ADMINS in .env file"
-      );
-      console.log(e);
+      console.log("initial admin list is not correct. please edit INIT_ADMINS in .env file",e);
     }
-  }
+}
+
+guide.setURL = (url) => db.set('guide.url',url).write();
+guide.getGuide = (url) => db.get('guide.url').value();
 
 module.exports.db = db;
 module.exports.admins = admins;
+module.exports.guide = guide;
