@@ -2,7 +2,7 @@
   <img alt="ACRT Infrastructure Templates" src="acrt_19_bot.png" width="650px">
 </div>
 
-# Ethiopia COVID-19 Heroes Bot 
+# COVID-19 Heroes Bot 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
@@ -10,8 +10,8 @@
 A Telegram bot that allows frontline healthcare workers to log any symptom they are experiencing, get best practice information, get logistical assistance and provide creative ways to distress.
 
 ## Goal
-1. Log any symptom ![implementing](https://img.shields.io/static/v1?label=Implemented&message=partialy&color=yellow)
-2. Get best practice information ![implementing](https://img.shields.io/static/v1?label=Implemented&message=none&color=red)
+1. Log any symptom ![implementing](https://img.shields.io/static/v1?label=Implemented&message=completed&color=green)
+2. Get best practice information ![implementing](https://img.shields.io/static/v1?label=Implemented&message=partially&color=yellow)
 3. Get logistical assistance ![implementing](https://img.shields.io/static/v1?label=Implemented&message=none&color=red)
 4. Provide creative ways to distress ![implementing](https://img.shields.io/static/v1?label=Implemented&message=none&color=red)
 

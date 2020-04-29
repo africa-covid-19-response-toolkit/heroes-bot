@@ -8,7 +8,7 @@
 
 const Extra = require('telegraf/extra');
 const Markup = require('telegraf/markup');
-
+const {admins} = require('./db');
 const Strings = require("./Strings");
 
 
@@ -18,25 +18,28 @@ class Keyboard {
     }
 
 
-    // mainKeyboard() {
-    //     return Markup.keyboard([
-    //         [Strings.symptom, Strings.report_string],
-    //         [Strings.statistics],
-    //         [Strings.about]
-    //     ])
-    //     .oneTime()
-    //     .resize()
-    //     .extra();
-    // }
 
-
-    mainKeyboard() {
-        return Markup.keyboard([
-            [Strings.report_string]
-        ])
-        .oneTime()
-        .resize()
-        .extra();
+    mainKeyboard(ctx) {
+        let username = ctx.update.callback_query?ctx.update.callback_query.from.username:ctx.message.from.username;
+        if(ctx != undefined && admins.isAdmin(username)){
+            return Markup.keyboard([
+                [Strings.report_string],
+                [Strings.physicians_guide],
+                [Strings.setGuide],
+                [Strings.admins]
+            ])
+            .oneTime()
+            .resize()
+            .extra();
+        }else{
+            return Markup.keyboard([
+                [Strings.report_string],
+                [Strings.physicians_guide]
+            ])
+            .oneTime()
+            .resize()
+            .extra();
+        }
     }
 
     genderKeyboard() {
@@ -100,7 +103,7 @@ class Keyboard {
         });
     }
 
-    areaOfWorkKeyborad(state){
+    areaOfWorkKeyboard(state){
         return Extra.markup((markup) => {
             let safeState = state === undefined ? Array(Strings.area_of_work_list.length).fill(false):state;
 
@@ -120,7 +123,7 @@ class Keyboard {
         });
     }
 
-    ppeKeyborad(state){
+    ppeKeyboard(state){
         return Extra.markup((markup) => {
             let safeState =( state === undefined) ? Array(Strings.ppe_list.length).fill(false):state;
 
@@ -149,6 +152,24 @@ class Keyboard {
             );
 
             btns.push([
+                markup.callbackButton(Strings.cancel,Strings.cancel)
+            ]);
+            return markup
+                .inlineKeyboard(btns)
+                .resize();
+        });
+    }
+    manageAdminKeyboard(cxt){
+        return Extra.markup((markup) => {
+            let admin_list = admins.find();
+            let btns = admin_list.map(
+                (label,index)=>{
+                    return [markup.callbackButton(`${label.name} ${label.telegramHandel}`, "@"+label.telegramHandel), markup.callbackButton("🗑","@"+label.telegramHandel)];
+                }
+            );
+
+            btns.push([
+                markup.callbackButton(Strings.addNewAdmin,Strings.addNewAdmin),
                 markup.callbackButton(Strings.cancel,Strings.cancel)
             ]);
             return markup

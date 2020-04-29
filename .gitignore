@@ -17,6 +17,10 @@ coverage
 package-lock.json
 yarn.lock
 client_secret.json
+/src/client_secret.json
+
+# lowdb data store file
+/src/dataStore.json 
 
 # Logs
 *.log
