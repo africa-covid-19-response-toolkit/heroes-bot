@@ -9,6 +9,7 @@
 
  const greet = "Welcome & Thank you for your service";
  const report_string = "📝 Report";
+ const physicians_guide = "💊 Physician's Guide";
  const about = "🎃 About";
  const cancel = "❌ cancel";
  const symptom = "🌡 Symptoms";
@@ -65,8 +66,17 @@
  const send_gps = "Send your GPS Location";
  const send_phone = "Send your phone number";
 
+ const admins = "✏️ Manage Admins";
+ const addNewAdmin = "🆕 new Admin";
+ const getTelegramHandel = "telegram username";
+ const first_name = "first name";
+
  // export
- module.exports.greet = greet;
+module.exports.greet = greet;
+module.exports.first_name = first_name;
+ module.exports.getTelegramHandel = getTelegramHandel;
+ module.exports.admins = admins;
+ module.exports.addNewAdmin = addNewAdmin;
  module.exports.area_of_work = area_of_work;
  module.exports.area_of_work_list = area_of_work_list;
  module.exports.symptoms_list = symptoms_list;
@@ -80,6 +90,7 @@
  module.exports.next = next;
  module.exports.profession_list = profession_list;
  module.exports.profession = profession;
+ module.exports.physicians_guide = physicians_guide;
 
 
  module.exports.report_string = report_string;

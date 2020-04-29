@@ -9,6 +9,8 @@
 const TelegrafFlow = require('telegraf-flow');
 const { Scene } = TelegrafFlow;
 const Extra = require('telegraf/extra');
+const { db } = require('./db');
+const { admins } = require('./db');
 
 const util = require('util')
 
@@ -57,7 +59,7 @@ if (dotenv.error) {
          greeter.enter((ctx) => {
              let fname = (ctx.from.first_name != undefined) ? ctx.from.first_name : ctx.from.username;
 
-             ctx.reply(`Hello ${fname}`, this.keyboard.mainKeyboard());
+             ctx.reply(`Hello ${fname}`, this.keyboard.mainKeyboard(ctx));
 
              // state
             //  new StatHandler().fetchData((data) => {
@@ -133,15 +135,25 @@ if (dotenv.error) {
          const report = new Scene("reportScene");
 
          report.enter((ctx) => {
-            // enter a scene
+             // enter a scene
             ctx.reply(Strings.greet);
             ctx.flow.enter("getnameScene", ctx.flow.state);         
             // Log
             new Log(ctx).log("Clicked on Report button!");
          });
+      
 
-        
+         report.leave((ctx) => {});
 
+         return report;
+     }
+     physiciansGuide() {
+         const report = new Scene("physiciansGuide");
+
+         report.enter((ctx) => {
+             ctx.reply(`https://telegra.ph/A-Physicians-Guide-to-COVID-19-04-28`,this.keyboard.mainKeyboard(ctx));    
+         });
+      
          report.leave((ctx) => {});
 
          return report;
@@ -413,7 +425,7 @@ if (dotenv.error) {
 
         getprofession.action(/[0-9]+/,(ctx)=>{
             ctx.flow.state.profession= Strings.profession_list[ctx.match[0]];
-            ctx.flow.enter("getAreaofWorksScene", ctx.flow.state);
+            ctx.flow.enter("getAreaOfWorksScene", ctx.flow.state);
         })
 
         getprofession.leave((ctx) => {});
@@ -421,10 +433,10 @@ if (dotenv.error) {
     }
 
      
-     getAreaofWorksScene() {
-         const getareaofwork = new Scene("getAreaofWorksScene");
+     getAreaOfWorksScene() {
+         const getareaofwork = new Scene("getAreaOfWorksScene");
          getareaofwork.enter((ctx) => {
-             ctx.reply(Strings.area_of_work, this.keyboard.areaOfWorkKeyborad())
+             ctx.reply(Strings.area_of_work, this.keyboard.areaOfWorkKeyboard())
          });
                   
          getareaofwork.leave((ctx) => {});
@@ -434,7 +446,7 @@ if (dotenv.error) {
                 ctx.flow.state.areaOfWork=Array(Strings.area_of_work_list.length).fill(false);
              }
              ctx.flow.state.areaOfWork[ctx.match[0]]=!ctx.flow.state.areaOfWork[ctx.match[0]];
-             ctx.editMessageText(Strings.area_of_work,this.keyboard.areaOfWorkKeyborad(ctx.flow.state.areaOfWork));
+             ctx.editMessageText(Strings.area_of_work,this.keyboard.areaOfWorkKeyboard(ctx.flow.state.areaOfWork));
          });
 
          getareaofwork.action(Strings.next,(ctx)=>{
@@ -443,7 +455,7 @@ if (dotenv.error) {
 
          getareaofwork.action(Strings.cancel,(ctx)=>{
             ctx.flow.leave();            
-            ctx.reply("Canceled!", this.keyboard.mainKeyboard());
+            ctx.reply("Canceled!", this.keyboard.mainKeyboard(ctx));
          })
 
          return getareaofwork;
@@ -472,7 +484,7 @@ if (dotenv.error) {
 
         symptomsScene.action(Strings.cancel,(ctx)=>{
            ctx.flow.leave();            
-           ctx.reply("Canceled!", this.keyboard.mainKeyboard());
+           ctx.reply("Canceled!", this.keyboard.mainKeyboard(ctx));
         })
 
         symptomsScene.leave((ctx) => {});
@@ -484,7 +496,7 @@ if (dotenv.error) {
     ppesUsedScene() {
         const ppesUsedScene = new Scene("ppesUsedScene");
         ppesUsedScene.enter((ctx) => {
-            ctx.reply(Strings.ppe_used, this.keyboard.ppeKeyborad())
+            ctx.reply(Strings.ppe_used, this.keyboard.ppeKeyboard())
         });
 
         ppesUsedScene.action(/[0-9]+/,(ctx)=>{
@@ -493,7 +505,7 @@ if (dotenv.error) {
                ctx.flow.state.ppe=Array(Strings.ppe_list.length).fill(false);
             }
             ctx.flow.state.ppe[ctx.match[0]]=!ctx.flow.state.ppe[ctx.match[0]];
-            return ctx.editMessageText("ppe used",this.keyboard.ppeKeyborad(ctx.flow.state.ppe));
+            return ctx.editMessageText("ppe used",this.keyboard.ppeKeyboard(ctx.flow.state.ppe));
         });
         
         ppesUsedScene.action(Strings.next,(ctx)=>{
@@ -502,7 +514,7 @@ if (dotenv.error) {
 
         ppesUsedScene.action(Strings.cancel,(ctx)=>{
            ctx.flow.leave();            
-           ctx.reply("Canceled!", this.keyboard.mainKeyboard());
+           ctx.reply("Canceled!", this.keyboard.mainKeyboard(ctx));
         })
         
 
@@ -510,6 +522,8 @@ if (dotenv.error) {
 
         return ppesUsedScene;
     }
+
+
 
 
      finScene() {
@@ -545,7 +559,7 @@ if (dotenv.error) {
 
 
         fin.leave((ctx) => {
-            ctx.reply(Strings.thank, this.keyboard.mainKeyboard());
+            ctx.reply(Strings.thank, this.keyboard.mainKeyboard(ctx));
         });
 
 
@@ -553,10 +567,77 @@ if (dotenv.error) {
      }
 
 
+     /* admin scene */
 
+     manageAdmins(){
+         const mngAdmins = new Scene("mngAdmins");
+         mngAdmins.enter((ctx) => {
+            ctx.reply(Strings.admins, this.keyboard.manageAdminKeyboard(ctx));
+         });
 
+         //delete admin
+         mngAdmins.action(/^@.+$/,(ctx)=>{
+            admins.delete(ctx.match[0].substr(1));
+            ctx.editMessageReplyMarkup(this.keyboard.manageAdminKeyboard(ctx).reply_markup);
+            //ctx.flow.enter("mngAdmins", ctx.flow.state);
+         })
+        
+         mngAdmins.action(Strings.cancel,(ctx)=>{
+            ctx.flow.leave();            
+            // console.log(ctx);
+            ctx.reply("Canceled!", this.keyboard.mainKeyboard(ctx));
+         })
+
+         mngAdmins.action(Strings.addNewAdmin,(ctx)=>{
+             ctx.reply("registering a new admin");
+            ctx.flow.enter("addNewAdmins", ctx.flow.state);
+         })
+
+         mngAdmins.leave((ctx) => {});
+         
+         return mngAdmins;
+     }
      
+     addNewAdmins(){
+        const addNewAdmins = new Scene("addNewAdmins");
+        addNewAdmins.enter((ctx) => {
+           ctx.reply(Strings.first_name, this.keyboard.cancelKeyboard(ctx));
+        });
+        addNewAdmins.on("message",(ctx)=>{
+            if (ctx.message.text == "" || ctx.message.text == undefined) {
+                ctx.reply(Strings.invalidInput);
+                ctx.flow.enter("addNewAdmins", ctx.flow.state);
+            }else{
+                ctx.flow.state.first_name = ctx.message.text;            
+                ctx.flow.enter("getTelegramHandel", ctx.flow.state);
+            }            
+        });
 
+        addNewAdmins.leave((ctx) => {});
+
+        return addNewAdmins;
+    }
+    
+    getTelegramHandel(){
+        const getTelegramHandel = new Scene("getTelegramHandel");
+        getTelegramHandel.enter((ctx) => {
+           ctx.reply(Strings.getTelegramHandel, this.keyboard.cancelKeyboard(ctx));
+        });
+        getTelegramHandel.on("message",(ctx)=>{
+            if (ctx.message.text == "" || ctx.message.text == undefined) {
+                ctx.reply(Strings.invalidInput);
+                ctx.flow.enter("getTelegramHandel", ctx.flow.state);
+            }else{
+                ctx.flow.state.telegramHandel = ctx.message.text;      
+                admins.insert({telegramHandel: ctx.message.text, name: ctx.flow.state.first_name});      
+                ctx.flow.enter("mngAdmins", ctx.flow.state);
+            }
+        });
+
+        getTelegramHandel.leave((ctx) => {});
+
+        return getTelegramHandel;
+    }
 
  }
 

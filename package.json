@@ -26,6 +26,7 @@
     "dotenv": "^8.2.0",
     "google-spreadsheet": "^3.0.11",
     "googleapis": "^49.0.0",
+    "lowdb": "^1.0.0",
     "moment": "^2.24.0",
     "node-fetch": "^2.6.0",
     "telegraf": "^3.37.0",

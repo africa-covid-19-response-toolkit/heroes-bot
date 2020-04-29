@@ -24,6 +24,14 @@ class Hear {
            ctx.flow.enter("reportScene");
         });
 
+        this.ctx.hears(Strings.physicians_guide, (ctx) => {
+           ctx.flow.enter("physiciansGuide");
+        });
+        
+        this.ctx.hears(Strings.admins, (ctx) => {
+           ctx.flow.enter("mngAdmins");
+        });
+        
         this.ctx.hears(Strings.about, (ctx) => {
             ctx.flow.enter("aboutScene");
         });
@@ -38,7 +46,7 @@ class Hear {
 
         this.ctx.hears(Strings.cancel, (ctx) => {
             ctx.flow.leave();
-            ctx.reply("Canceled!", this.keyboard.mainKeyboard());
+            ctx.reply("Canceled!", this.keyboard.mainKeyboard(ctx));
         });
 
     }

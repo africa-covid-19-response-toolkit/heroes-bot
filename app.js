@@ -45,7 +45,7 @@ hear.hear();
 
 // register
 flow.register(new Scenes().collectDataScene()); 
-flow.register(new Scenes().getAreaofWorksScene());
+flow.register(new Scenes().getAreaOfWorksScene());
 flow.register(new Scenes().symptomsScene()); 
 flow.register(new Scenes().ppesUsedScene());
 flow.register(new Scenes().greeterScene()); 
@@ -62,6 +62,10 @@ flow.register(new Scenes().finScene());
 flow.register(new Scenes().symptomScene());
 flow.register(new Scenes().statScene()); 
 flow.register(new Scenes().getprofessionScene());
+flow.register(new Scenes().physiciansGuide());
+flow.register(new Scenes().manageAdmins());
+flow.register(new Scenes().addNewAdmins());
+flow.register(new Scenes().getTelegramHandel());
 
 bot.use(Telegraf.session())
 bot.use(flow.middleware())
