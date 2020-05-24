@@ -1,5 +1,5 @@
 <div align="center">
-  <img alt="ACRT Infrastructure Templates" src="acrt_19_bot.png" width="650px">
+  <img alt="ACRT Infrastructure Templates" src="acrt_19_heroes_bot.png" width="650px">
 </div>
 
 # COVID-19 Heroes Bot 
